@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body {
+        display: flex;
+        padding: 0px 20px;
+        justify-content: center;
+        height: 95vh;
+    }
+
+    nav {
+        width: 100%;
+        max-height: 100%;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: column;
+        flex: 1;
+        margin: 10px;
+    }
+
+    nav button {
+        flex: 1;
+        width: 100%;
+        border: none;
+        cursor: pointer;
+        border-right:5px solid #000000;
+        background: linear-gradient(to right, #000000, #171411, rgb(9, 9, 9)) no-repeat;
+        background-size: 0% 100%;
+        background-position: right;
+        transition: background-size 0.3s;
+
+        &:hover {
+            background-size: 100% 1%;
+            background-position: left;
+        }
+    }
+
+    .navactive {
+        background-size: 100% 1%;
+        background-position: left;
+    }
+
+    .main {
+        display: flex;
+        width: 99%;
+        height: 100%;
+        flex: 9;
+        flex-direction: column;
+        overflow: hidden;
+        -ms-overflow-style: none;
+        /* 隐藏IE和Edge的滚动条 */
+        scrollbar-width: none;
+        /* 隐藏Firefox的滚动条 */
+        scroll-snap-type: y mandatory;
+        /* 强制snap */
+        scroll-behavior: smooth;
+        /* 平滑滚动 */
+
+
+        &>* {
+            flex: 0 0 100%;
+            scroll-snap-align: center;
+        }
+    }
+
+    .main1 {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .info {
+        display: flex;
+        justify-content: space-between;
+        flex: 4;
+        height: 80%;
+    }
+
+    .player {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex: 1;
+        flex-direction: column;
+        transition: all 0.5s ease-in-out;
+        margin: 10px;
+        height: 100%;
+    }
+
+    .cover {
+        width: 60%;
+        flex: 3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &>img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+    }
+
+    .song-name {
+        flex: 1;
+        width: 59.5%;
+        text-align: left;
+
+        &>* {
+            margin: 0;
+        }
+    }
+
+    .lyrics {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: all 0.5s ease-in-out;
+        margin: 10px;
+        color: #7c7c7c;
+        overflow: auto;
+        padding: 0 0%;
+        height: 100%;
+        -ms-overflow-style: none;
+        /* 隐藏IE和Edge的滚动条 */
+        scrollbar-width: none;
+        /* 隐藏Firefox的滚动条 */
+        scroll-snap-type: y mandatory;
+        /* 强制snap */
+        scroll-behavior: smooth;
+
+        /* 平滑滚动 */
+        &>div {
+            width: 70%;
+            margin: 10px;
+            transition: all 0.3s ease-in-out;
+
+            & p {
+                margin: 0;
+                font-size: larger;
+                font-weight: bolder;
+            }
+        }
+
+        &>div:nth-child(1) {
+            margin-top: 30%;
+        }
+
+        &>div:last-child {
+            margin-bottom: 50%;
+        }
+    }
+
+    .control {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .progress {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        justify-content: center;
+        align-items: center;
+        user-select: none;
+
+        &:hover .progress-bar {
+            transform: scaleY(2);
+        }
+
+        & .progress-bar {
+            position: relative;
+            height: 3px;
+            width: 100%;
+            background-color: rgb(183, 183, 183);
+            transition: all 0.15s;
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+
+            & .progress-bar-inner {
+                position: absolute;
+                height: 100%;
+                width: 0%;
+                background-color: #000000;
+            }
+
+
+        }
+
+        & .playTime {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 10px;
+            user-select: none;
+
+        }
+    }
+
+    .control-btn {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 10px;
+        user-select: none;
+
+        & img {
+            cursor: pointer;
+            width: 30px;
+            margin: 0 20px;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+
+        & .play-btn {
+            width: 30px;
+        }
+    }
+
+
+
+    .lyrics-btn {
+        display: none;
+    }
+
+    .play-btn2 {
+        display: none;
+    }
+
+    .music-list {
+        overflow: hidden;
+        padding: 5% 0.1%;
+
+        & ul {
+            overflow: auto;
+            -ms-overflow-style: none;
+            /* 隐藏IE和Edge的滚动条 */
+            scrollbar-width: none;
+            /* 隐藏Firefox的滚动条 */
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
+            height: 100%;
+
+            & li {
+                width: 100%;
+                height: 10%;
+                margin: 10px;
+                padding: 10px;
+                border-radius: 1%;
+                cursor: pointer;
+                display: flex;
+
+                & img {
+                    height: 100%;
+                    border-radius: 5px;
+                    margin: 0 3%;
+                }
+
+                &:hover {
+                    background-color: #f2f2f2;
+                }
+
+                & div {
+                    &>* {
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    .active {
+        color: #000000;
+        font-size: larger;
+        transition: all 0.3s ease-in-out;
+    }
+
+    @media screen and (max-width: 768px) {
+        body {
+            flex-direction: column;
+            padding: 0px 20px;
+            margin: 10px;
+            justify-content: center;
+        }
+
+        nav {
+            width: 100%;
+            height: 50px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            & >button{
+
+                background: none;
+                border: none;
+            }
+        }
+
+        nav .lyrics-btn {
+            display: inline;
+            background: none;
+        }
+
+        nav .scan-btn {
+            display: none;
+        }
+
+        nav .play-btn1 {
+            display: none;
+        }
+
+        nav .play-btn2 {
+            display: inline;
+        }
+
+        .main {
+            display: flex;
+            border: 1px solid #000000;
+            width: 99%;
+            height: 100%;
+            flex: 9;
+            flex-direction: column;
+            padding: 10px;
+            overflow: auto;
+            -ms-overflow-style: none;
+            /* 隐藏IE和Edge的滚动条 */
+            scrollbar-width: none;
+            /* 隐藏Firefox的滚动条 */
+            scroll-snap-type: y mandatory;
+            /* 强制snap */
+            scroll-behavior: smooth;
+            /* 平滑滚动 */
+
+
+            &>* {
+                flex: 0 0 100%;
+                scroll-snap-align: center;
+            }
+        }
+
+
+
+        .main1>.info {
+
+            overflow: auto;
+            -ms-overflow-style: none;
+            /* 隐藏IE和Edge的滚动条 */
+            scrollbar-width: none;
+            /* 隐藏Firefox的滚动条 */
+            scroll-snap-type: x mandatory;
+            /* 强制snap */
+            scroll-behavior: smooth;
+
+            /* 平滑滚动 */
+            &>* {
+                flex: 0 0 99%;
+                scroll-snap-align: start;
+                /* 强制snap */
+            }
+
+            &>.lyrics>* {
+                width: 90%;
+            }
+
+        }
+
+        .lyrics {
+
+            &>div {
+                transition: all 0.5s ease-in-out;
+            }
+
+            &>div:nth-child(1) {
+                margin-top: 50%;
+            }
+
+        }
+
+        .cover {
+            width: 80%;
+            max-width: 300px;
+            flex: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &>img {
+                width: 100%;
+                aspect-ratio: 1/1;
+                object-fit: cover;
+            }
+        }
+
+        .song-name {
+            flex: 1;
+            width: 79.5%;
+            max-width: 299px;
+            text-align: left;
+
+            &>* {
+                margin: 0;
+            }
+        }
+
+        .progress {
+            width: 90%;
+        }
+    }
+</style>
+
+<body>
+    <nav>
+        <button class="play-btn1">
+            <h1>播放</h1>
+        </button>
+        <button class="play-btn2">
+            <h1>播放</h1>
+        </button>
+        <button class="lyrics-btn">
+            <h1>歌词</h1>
+        </button>
+        <button class="list-btn">
+            <h1>歌曲列表</h1>
+        </button>
+        <button class="scan-btn">
+            <h1>扫描本地音乐</h1>
+        </button>
+    </nav>
+    <div class="main">
+        <div class="main1">
+
+            <div class="info">
+                <div class="player">
+                    <div class="cover">
+                        <img src="./media/Jiunu Nai Hola-Tribal Rain.jpg" alt="" onerror="this.src='./imgs/error.jpg'">
+                    </div>
+                    <div class="song-name">
+                        <h2>歌曲名</h2>
+                        <p>歌手</p>
+                    </div>
+                </div>
+                <div class="lyrics">
+                </div>
+            </div>
+            <audio src=""></audio>
+            <div class="control">
+                <div class="progress">
+                    <div class="progress-bar">
+                        <div class="progress-bar-inner"></div>
+                    </div>
+                    <div class="playTime">
+                        <span>00:00</span>
+                        <span>04:25</span>
+                    </div>
+                </div>
+                <div class="control-btn">
+                    <img src="./icon/left.png" alt="上一首" class="left-btn">
+                    <img src="./icon/play.png" alt="播放/暂停" class="play-btn">
+                    <img src="./icon/right.png" alt="下一首" class="right-btn">
+                </div>
+            </div>
+        </div>
+        <div class="music-list">
+            <ul>
+                <li>歌曲1</li>
+                <li>歌曲2</li>
+                <li>歌曲3</li>
+                <li>歌曲4</li>
+                <li>歌曲5</li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        document.querySelector('.lyrics-btn').addEventListener('click', function () {//点击歌词按钮
+            document.querySelector('.main').scrollTop = 0;//先确保滑动到播放界面
+            document.querySelector('.info').scrollLeft = document.querySelector('.info').offsetWidth;//滑动到歌词界面
+        });
+        document.querySelector('.play-btn2').addEventListener('click', function () {//点击手机播放按钮
+            document.querySelector('.main').scrollTop = 0;//先确保滑动到播放界面
+            document.querySelector('.info').scrollLeft = 0;//滑动到播放界面
+        });
+        document.querySelector('.list-btn').addEventListener('click', function () {//点击歌曲列表按钮  
+            if (document.querySelector('.main').scrollTop == 0) {
+                document.querySelector('.main').scrollTop = document.querySelector('.main').offsetHeight;//滑动到歌曲列表界面
+                document.querySelector('.list-btn').classList.remove('navactive');
+                document.querySelector('.play-btn1').classList.remove('navactive');
+                document.querySelector('.list-btn').classList.add('navactive');
+            } else {
+                document.querySelector('.main').scrollTop = 0;//滑动到播放界面
+                document.querySelector('.play-btn1').classList.remove('navactive');
+                document.querySelector('.list-btn').classList.remove('navactive');                
+                document.querySelector('.play-btn1').classList.add('navactive');
+            }
+        });
+        document.querySelector('.play-btn1').addEventListener('click', function () {//点击电脑播放按钮
+            document.querySelector('.main').scrollTop = 0;//滑动到播放界面
+            document.querySelector('.play-btn1').classList.remove('navactive');
+            document.querySelector('.list-btn').classList.remove('navactive');
+            document.querySelector('.play-btn1').classList.add('navactive');
+        });
+        let musicList = [
+            {
+                musicname: 'Jiunu Nai Hola',
+                singer: 'Tribal Rain',
+                musicurl: './media/Jiunu Nai Hola-Tribal Rain.mp3',
+                lyric: './media/Jiunu Nai Hola-Tribal Rain.lrc',
+                cover: './media/Jiunu Nai Hola-Tribal Rain.jpg',
+                lyric: [
+                    {
+                        "timestamp": "00:18.50",
+                        "original": "जिउनु नै होला यसरी नै यो गीत गाउँदै",
+                        "translation": "唱这首歌就是我的生活方式"
+                    },
+                    {
+                        "timestamp": "00:25.00",
+                        "original": "अरूलाई सुनाउँदै संसारले देखेन तिम्रो खुसी ऊसँगै थियो भनेर आफैलाई बहाना बनाएर भन्थें अरूको परवाह थिएन सबैलाई भएको थियो",
+                        "translation": "告诉别人全世界都看不到你的幸福，我曾经对自己假装和他在一起别人不在乎，每个人都发生过"
+                    },
+                    {
+                        "timestamp": "00:49.00",
+                        "original": "मलाई पनि एक समयमा त्यस्तै माया",
+                        "translation": "我曾经也有过同样的爱好"
+                    },
+                    {
+                        "timestamp": "01:02.00",
+                        "original": "कहाँ लाने होला यो समयले मलाई?",
+                        "translation": "这次又会带我去哪里呢？"
+                    },
+                    {
+                        "timestamp": "01:07.00",
+                        "original": "पर्खिदै छु सबैको भीडमा",
+                        "translation": "我在人群中等待"
+                    },
+                    {
+                        "timestamp": "01:11.00",
+                        "original": "आफ्नो भनूँ तर कसलाई?",
+                        "translation": "但是等谁呢？"
+                    },
+                    {
+                        "timestamp": "01:16.00",
+                        "original": "आफ्नो भनूँ तर कसलाई?",
+                        "translation": "但是等谁呢？"
+                    },
+                    {
+                        "timestamp": "01:22.00",
+                        "original": "Ooh, yeah, ooh",
+                        "translation": ""
+                    },
+                    {
+                        "timestamp": "01:43.00",
+                        "original": "जिउनु नै होला यसरी नै यो गीत गाउँदै",
+                        "translation": "唱这首歌就是我的生活方式"
+                    },
+                    {
+                        "timestamp": "01:49.00",
+                        "original": "अरूलाई सुनाउँदै संसारले देखेन मेरो खुसी तिमीसँगै थियो भनेर आफैलाई बहाना बनाएर भन्थें अरूको परवाह थिएन सबैलाई भएको थियो",
+                        "translation": "告诉别人，世界没有看见，我曾经假装我的幸福是和你在一起，我不关心别人"
+                    },
+                    {
+                        "timestamp": "02:12.00",
+                        "original": "मलाई पनि एक समयमा त्यस्तै माया",
+                        "translation": "我曾经也有过同样的爱好"
+                    },
+                    {
+                        "timestamp": "02:22.00",
+                        "original": "कहाँ लाने होला यो समयले मलाई?",
+                        "translation": "这次又会带我去哪里呢？"
+                    },
+                    {
+                        "timestamp": "02:31.00",
+                        "original": "पर्खिदै छु सबैको भीडमा",
+                        "translation": "我在人群中等待"
+                    },
+                    {
+                        "timestamp": "02:35.00",
+                        "original": "आफ्नो भनूँ तर कसलाई?",
+                        "translation": "但是等谁呢？"
+                    },
+                    {
+                        "timestamp": "02:40.00",
+                        "original": "आफ्नो भनूँ तर कसलाई?",
+                        "translation": "但是等谁呢？"
+                    },
+                    {
+                        "timestamp": "03:06.05",
+                        "original": "जिउनु नै होला यसरी नै यो गीत गाउँदै",
+                        "translation": "唱这首歌就是我的生活方式"
+                    },
+                    {
+                        "timestamp": "03:14.00",
+                        "original": "अरूलाई सुनाउँदै संसारले देखेन तिम्रो खुसी मसँगै थियो भनेर",
+                        "translation": "告诉别人全世界都没有看到你的幸福在我身边"
+                    },
+                    {
+                        "timestamp": "03:25.05",
+                        "original": "जिउनु नै होला यसरी नै जिउनु नै होला यसरी नै यो गीत गाउँदै",
+                        "translation": "这就是我生活的方式 这就是我生活的方式 唱这首歌"
+                    },
+                    {
+                        "timestamp": "03:41.05",
+                        "original": "अरूलाई सुनाउँदै",
+                        "translation": "告诉别人"
+                    }
+                ]
+
+
+            }
+        ];
+        let nowmusic = 0;
+        let isDebouncing = false;//防抖状态
+        let audio = document.querySelector('audio');
+        document.querySelector('.play-btn').addEventListener('click', function () {//点击播放/暂停按钮
+            if (isDebouncing) return; // 如果正在防抖，不执行后续代码
+            isDebouncing = true; // 设置为正在防抖状态
+
+            setTimeout(() => {
+                isDebouncing = false; // 防抖结束
+            }, 1000); // 设置防抖的时间，这里是1000毫秒
+
+            if (audio.paused) {
+                audio.play();
+                document.querySelector('.play-btn').src = './icon/pause.png';
+                audio.volume = 0;
+                let time = setInterval(() => {//渐显音量
+                    if (audio.volume >= 0.90) {
+                        clearInterval(time);
+                        audio.volume = 1;
+                    } else {
+                        audio.volume = audio.volume + 0.01;
+                    }
+
+                }, 8);
+            } else {
+                let time = setInterval(() => {//渐隐音量
+                    document.querySelector('.play-btn').src = './icon/play.png';
+                    if (audio.volume <= 0.02) {
+                        audio.pause();
+                        console.log('暂停播放');
+                        clearInterval(time)
+                    } else {
+                        audio.volume = audio.volume - 0.01;
+                    }
+                }, 5);
+            }
+        });
+        document.querySelector('.left-btn').addEventListener('click', function () {//点击上一首按钮
+            nowmusic--;
+            if (nowmusic < 0) {
+                nowmusic = musicList.length - 1;
+            }
+            renderinfo(musicList[nowmusic]);
+            audio.src = musicList[nowmusic].musicurl;
+            audio.play();
+            audio.volume = 0;
+            audio.volume = 1;
+        });
+        document.querySelector('.right-btn').addEventListener('click', function () {//点击下一首按钮
+            nowmusic++;
+            if (nowmusic >= musicList.length) {
+                nowmusic = 0;
+            }
+            renderinfo(musicList[nowmusic]);
+            audio.src = musicList[nowmusic].musicurl;
+            audio.play();
+            audio.volume = 0;
+            audio.volume = 1;
+        });
+        function renderinfo(data) {//渲染播放信息
+            document.querySelector('.cover img').src = data.cover;
+            document.querySelector('.song-name h2').textContent = data.musicname;
+            document.querySelector('.song-name p').textContent = data.singer;
+            document.querySelector('audio').src = data.musicurl;
+            //渲染歌词
+            document.querySelector('.lyrics').innerHTML = '';
+            data.lyric.forEach((item, index) => {
+                let lyrics = document.querySelector('.lyrics');
+                let div = document.createElement('div');
+                let p1 = document.createElement('p');
+                let p2 = document.createElement('p');
+                p1.textContent = item.original;
+                p2.textContent = item.translation;
+                div.appendChild(p1);
+                div.appendChild(p2);
+                lyrics.appendChild(div);
+            })
+            //渲染进度条总时间
+            audio.addEventListener('loadedmetadata', function () {
+                let totalTime = audio.duration;
+                let playTime = document.querySelector('.playTime span:first-child');
+                let endTime = document.querySelector('.playTime span:last-child');
+                playTime.textContent = '00:00';
+                endTime.textContent = formatTime(totalTime);
+            });
+        }
+        renderinfo(musicList[nowmusic]);
+        function renderlist() {//渲染歌曲列表
+            document.querySelector('.music-list ul').innerHTML = '';
+            musicList.forEach((item, index) => {
+                let li = document.createElement('li');
+                let cover = document.createElement('img');//创建img标签
+                cover.src = item.cover;
+                cover.onerror = function () {
+                    this.src = './imgs/error.jpg'; // 设置为错误图片路径
+                };
+                li.appendChild(cover);
+                let div = document.createElement('div');
+                let p1 = document.createElement('h2');
+                p1.textContent = item.musicname;
+                div.appendChild(p1);
+                let p2 = document.createElement('p');
+                li.appendChild(div);//这里是为了不让歌曲名和歌手都显示在同一行，所以用div包裹了两个p
+                p2.textContent = item.singer;
+                div.appendChild(p2);
+                li.addEventListener('click', function () {
+                    renderinfo(item);
+                    document.querySelector('.play-btn').click();
+                    audio.volume = 0;
+                    //因为就渐隐的缘故，暂停播放后，音量会很小，点击歌曲卡片播放时会听不到声音，所以这里设置一下音量为1
+                    audio.volume = 1;
+                    nowmusic = index;
+                });
+                document.querySelector('.music-list ul').appendChild(li);
+            })
+        }
+        renderlist();//渲染歌曲列表
+
+
+
+        let progressclick = false;//用来判断当前是否按下进度条
+        let progresstime = 0;
+        let isscroll = false;//用来判断当前是否在滚动歌词
+        let mousemove = false;
+        audio.addEventListener('timeupdate', updatePlayTime);//监听播放时间
+        document.querySelector('.progress-bar').addEventListener('mousedown', function (e) {//监听进度条按下
+            progressclick = true;
+            progresstime = e.offsetX / this.offsetWidth;
+            document.querySelector('.progress-bar-inner').style.width = (progresstime * 100) + '%';
+        });
+        document.addEventListener('mouseup', function () {//监听鼠标松开
+            if (progressclick) {
+                audio.currentTime = progresstime * audio.duration;
+            }
+            progressclick = false;
+        });
+        document.querySelector('.main').addEventListener('mousemove', function (e) {//监听点击进度条后拖动
+            if (progressclick) {
+                let x = document.querySelector('.progress-bar').getBoundingClientRect().left;
+                let time = (e.clientX - x) / document.querySelector('.progress-bar').offsetWidth;
+                if (time < 0) {
+                    time = 0;
+                }
+                if (time > 1) {
+                    time = 1;
+                }
+                progresstime = time;
+                document.querySelector('.progress-bar-inner').style.width = (progresstime * 100) + '%';
+            }
+
+        })
+        function updatePlayTime() {//更新播放时间和歌词滚动
+            if (!progressclick) {
+                document.querySelector('.progress-bar-inner').style.width = (audio.currentTime / audio.duration) * 100 + '%';
+            }
+            document.querySelector('.playTime span:first-child').textContent = formatTime(audio.currentTime);
+            let lyrics = document.querySelector('.lyrics');
+
+            musicList[nowmusic].lyric.forEach((item, index) => {
+                lyrics.children[index].classList.remove('active');
+                if (audio.currentTime >= timeToSeconds(musicList[nowmusic].lyric[musicList[nowmusic].lyric.length - 1].timestamp)) {
+                    lyrics.children[musicList[nowmusic].lyric.length - 1].classList.add('active');
+                } else {
+                    if (audio.currentTime >= timeToSeconds(item.timestamp) && audio.currentTime <= timeToSeconds(musicList[nowmusic].lyric[index + 1].timestamp)) {
+                        lyrics.children[index].classList.add('active');
+                        let h = document.querySelectorAll('.lyrics div');
+                        let hs = 0;
+                        for (let i = 0; i <= index - 1; i++) {//每行歌词的高度都不一样，所以不能直接用index*某一个div的高度，要遍历所有div的高度求和
+                            h1 = h[i].clientHeight + 20;
+                            hs += h1;
+                        }
+                        if (!isscroll) {
+                            lyrics.scrollTop = (hs - 10);
+                        }
+                    }
+                }
+            });
+
+        }
+        document.querySelector('.lyrics').addEventListener('mouseenter', function () {//监听鼠标进入歌词区域
+            mousemove = true;
+            console.log(mousemove);
+
+        });
+        document.querySelector('.lyrics').addEventListener('mouseleave', function () {//监听鼠标移出歌词区域
+            mousemove = false;
+            console.log(mousemove);
+
+        });
+        let time;
+        document.querySelector('.lyrics').addEventListener('scroll', function () {//监听歌词滚动
+            if (!mousemove) {
+                return;
+            }
+            clearInterval(time);
+            isscroll = true;
+            console.log('歌词滚动');
+
+            time = setTimeout(() => {
+                isscroll = false;
+            }, 1000);
+
+        });
+        function formatTime(time) {//将时间转换为分秒格式
+
+            let minute = Math.floor(time / 60);
+            let second = Math.floor(time % 60);
+            if (minute < 10) {
+                minute = '0' + minute;
+            }
+            if (second < 10) {
+                second = '0' + second;
+            }
+            return minute + ':' + second;
+        }
+        function timeToSeconds(time) {//将分秒格式的时间转换为秒数
+            let parts = time.split(':'); // 分割分钟和秒
+            let minutes = parseInt(parts[0], 10); // 取分钟部分并转换为整数
+            let seconds = parseFloat(parts[1]); // 取秒部分并转换为浮点数
+            return minutes * 60 + seconds; // 转换为总秒数
+        }
+
+
+
+        //创建input元素，设置type为file，multiple为true，用于选择多张音乐文件
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.multiple = true;
+        input.webkitdirectory = true;
+        document.querySelector('.scan-btn').onclick = function () {
+            input.click();
+        }
+        input.addEventListener('change', function () {//监听选择文件
+            musicList = [];
+            let files = Array.from(this.files);//将FileList转化为数组
+            console.log(files);
+            let musicnamelist = files
+            musicnamelist = musicnamelist.map(item => item.name);//获取文件名列表
+            musicnamelist = musicnamelist.map((item) => {
+                let a = item.lastIndexOf('.')//获取文件名的最后一个.的位置注意好几处大写，不要弄错了
+                return item.split(item[a])[0]
+            })
+            musicnamelist = [...new Set(musicnamelist)]//去重
+            console.log(musicnamelist);
+            musicnamelist.forEach((item, index) => {
+                let musicurl;
+                let cover;
+                let singer;
+                let lyric;
+                let musicname;
+                let ok = false;
+                files.forEach((file, index2) => {
+                    if (file.name.includes(item)) {
+                        if (!file.name.includes('.lrc')) {
+                            ok = true;
+                        }
+                        if (file.type.includes('audio')) {
+                            musicurl = URL.createObjectURL(file);
+                        } else if (file.type.includes('image')) {
+                            cover = URL.createObjectURL(file);
+                        } else {
+                            lyric = file;
+                            const reader = new FileReader();
+                            reader.readAsText(lyric);
+                            reader.onload = function () {
+                                lyric = reader.result.split('\n');
+                                timestamp = lyric.map(item => {//获取所有歌词时间戳
+                                    return item = item.split('[')[1].split(']')[0]
+                                });
+                                timestamp = [...new Set(timestamp)];//去重
+                                console.log(timestamp);
+                                let a = [];
+                                timestamp.forEach((item, index) => {
+
+                                    a.push({
+                                        "timestamp": item,
+                                        "original": lyric.filter(item1 => item1.includes(item))[0].split(']')[1],
+                                        "translation": lyric.filter(item1 => item1.includes(item))[1] ? lyric.filter(item1 => item1.includes(item))[1].split(']')[1] : ''
+                                    })
+                                });
+                                lyric = a;
+                                ok = true;
+                                console.log(1, lyric);//注意这是异步的，所以下面要延迟push
+                            }
+
+                        }
+
+                    }
+
+                })
+
+                // ok 为 true 后，执行以下逻辑
+                let time = setInterval(() => {
+                    if (ok) {
+                        console.log(item.split('-')[1].trim());
+
+                        musicList.push({
+                            "musicname": item.split('-')[0].trim(),
+                            "singer": item.split('-')[1].trim(),
+                            "musicurl": musicurl,
+                            "cover": cover,
+                            "lyric": lyric || [{ "timestamp": "00:00.00", "original": "暂无歌词", "translation": "" }]
+                        });
+                        clearInterval(time);
+                        console.log(musicList);
+                    }
+                }, 100)
+
+
+
+
+
+            })
+            setTimeout(() => {
+                renderlist();//渲染歌曲列表
+            }, 100)
+        });
+    </script>
+</body>
+
+</html>
