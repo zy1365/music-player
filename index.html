@@ -542,8 +542,8 @@
                 "lyric": [
                     {
                         "timestamp": "00:01.00",
-                        "original": "यो गीत कृपया {Angel:)Magar} द्वारा अनुवाद गरिएको हो\r",
-                        "translation": "此歌词由 {Angel:)Magar} 提供翻译\r"
+                        "original": "यो गीत कृपया {Angel:)Magar} द्वारा अनुवाद गरिएको हो🎉🎉🎉\r",
+                        "translation": "此歌词由 {Angel:)Magar} 提供翻译🎉🎉🎉\r"
                     },
                     {
                         "timestamp": "00:18.50",
@@ -1571,7 +1571,7 @@
             input.click();
         }
         input.addEventListener('change', function () {//监听选择文件
-            musicList = [];
+            
             let files = Array.from(this.files);//将FileList转化为数组
             console.log(files);
             let musicnamelist = files
@@ -1652,6 +1652,15 @@
 
             })
             setTimeout(() => {
+                let uniqueMusicList=[];
+                musicList=musicList.filter(item=>{
+                    if(uniqueMusicList.includes(item.musicname)){
+                        return false;
+                    }
+                    uniqueMusicList.push(item.musicname);
+                    return true;
+                })
+                console.log(musicList);
                 renderlist();//渲染歌曲列表
             }, 100)
         });
